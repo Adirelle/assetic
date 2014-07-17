@@ -110,6 +110,9 @@ class DirectoryResourceTest extends \PHPUnit_Framework_TestCase
     {
         // Create the symlink if it doesn't already exist yet (if someone broke the entire testsuite perhaps)
         if (!is_dir(__DIR__.'/Fixtures/dir3')) {
+            if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $this->markTestSkipped('No symlink tests using Windows.');
+            }
             symlink(__DIR__.'/Fixtures/dir2', __DIR__.'/Fixtures/dir3');
         }
 
