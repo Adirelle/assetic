@@ -18,8 +18,9 @@ use Assetic\Filter\FilterInterface;
  * A reference to an asset in the asset manager.
  *
  * @author Kris Wallsmith <kris.wallsmith@gmail.com>
+ * @author Adirelle <adirelle@gmail.com>
  */
-class AssetReference implements AssetInterface
+class AssetReference implements \IteratorAggregate, AssetCollectionInterface
 {
     private $am;
     private $name;
@@ -118,21 +119,78 @@ class AssetReference implements AssetInterface
         $this->callAsset(__FUNCTION__, array($values));
     }
 
+    public function add(AssetInterface $asset)
+    {
+        $asset = $this->getAsset();
+
+        if ($asset instanceof AssetCollectionInterface) {
+            return $asset->add($asset);
+        }
+    }
+
+    public function all()
+    {
+        $this->flushFilters();
+
+        $asset = $this->getAsset();
+
+        if ($asset instanceof AssetCollectionInterface) {
+            return $asset->all();
+        } else {
+            return [ $asset ];
+        }
+    }
+
+    public function removeLeaf(AssetInterface $leaf, $graceful = false)
+    {
+        $asset = $this->getAsset();
+
+        if ($asset instanceof AssetCollectionInterface) {
+            return $asset->removeLeaf($leaf, $graceful);
+        }
+    }
+
+    public function replaceLeaf(AssetInterface $needle, AssetInterface $replacement, $graceful = false)
+    {
+        $asset = $this->getAsset();
+
+        if ($asset instanceof AssetCollectionInterface) {
+            return $asset->replaceLeaf($needle, $replacement, $graceful);
+        }
+    }
+
+    public function getIterator()
+    {
+        $asset = $this->getAsset();
+
+        if ($asset instanceof \IteratorAggregate) {
+            return $asset->getIterator();
+        } else {
+            return new \ArrayIterator([$asset]);
+        }
+    }
+
     // private
+
+    private function getAsset()
+    {
+        return $this->am->get($this->name);
+    }
 
     private function callAsset($method, $arguments = array())
     {
-        $asset = $this->am->get($this->name);
+        $asset = $this->getAsset();
 
         return call_user_func_array(array($asset, $method), $arguments);
     }
 
     private function flushFilters()
     {
-        $asset = $this->am->get($this->name);
+        $asset = $this->getAsset();
 
         while ($filter = array_shift($this->filters)) {
             $asset->ensureFilter($filter);
         }
     }
+
 }

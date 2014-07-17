@@ -60,10 +60,16 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('jquery')
             ->will($this->returnValue($referenced));
+        $referenced->expects($this->any())
+            ->method('getVars')
+            ->will($this->returnValue([]));
+        $referenced->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue([]));
 
         $assets = $this->factory->createAsset(array('@jquery'));
-        $arr = iterator_to_array($assets);
-        $this->assertInstanceOf('Assetic\\Asset\\AssetReference', $arr[0], '->createAsset() creates a reference');
+        $ref = $assets->all()[0];
+        $this->assertInstanceOf('Assetic\\Asset\\AssetReference', $ref, '->createAsset() creates a reference');
     }
 
     /**
