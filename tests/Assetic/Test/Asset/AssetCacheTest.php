@@ -116,7 +116,13 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
     {
         $filter = $this->getMock('Assetic\\Filter\\FilterInterface');
         $this->inner->expects($this->once())->method('ensureFilter');
+        $this->inner->expects($this->exactly(2))
+            ->method('getLastModified')
+            ->will($this->returnValue(123));
+
+        $this->asset->setLastModified(145);
         $this->asset->ensureFilter($filter);
+        $this->assertEquals(123, $this->asset->getLastModified(), '->ensureFilter() clears cached last modified');
     }
 
     public function testGetFilters()
@@ -171,5 +177,54 @@ class AssetCacheTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(123));
 
         $this->assertEquals(123, $this->asset->getLastModified(), '->getLastModified() returns the inner asset last modified');
+        $this->assertEquals(123, $this->asset->getLastModified(), '->getLastModified() caches the inner asset last modified');
     }
+
+    public function testSetLastModified()
+    {
+        $this->inner->expects($this->once())
+            ->method('getLastModified')
+            ->will($this->returnValue(null));
+
+        $this->asset->setLastModified(145);
+
+        $this->assertEquals(145, $this->asset->getLastModified(), '->setLastModified() accepts any value when inner asset returns null');
+    }
+
+    public function testSetLastModifiedGreaterValue()
+    {
+        $this->inner->expects($this->once())
+            ->method('getLastModified')
+            ->will($this->returnValue(123));
+
+        $this->asset->setLastModified(145);
+
+        $this->assertEquals(145, $this->asset->getLastModified(), '->setLastModified() accepts values greater than existing value');
+    }
+
+    public function testSetLastModifiedLowerValue()
+    {
+        $this->inner->expects($this->once())
+            ->method('getLastModified')
+            ->will($this->returnValue(123));
+
+        $this->asset->setLastModified(10);
+
+        $this->assertEquals(123, $this->asset->getLastModified(), '->setLastModified() ignores values lower than existing value');
+    }
+
+    public function testClearLastModified()
+    {
+        $this->inner->expects($this->exactly(2))
+            ->method('getLastModified')
+            ->will($this->returnValue(123));
+
+        $this->asset->setLastModified(145);
+
+        $this->assertEquals(145, $this->asset->getLastModified());
+
+        $this->asset->clearLastModified();
+        $this->assertEquals(123, $this->asset->getLastModified(), '->clearLastModified() clears cached last modified');
+    }
+
 }
