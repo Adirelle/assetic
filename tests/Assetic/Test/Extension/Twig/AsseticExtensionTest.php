@@ -71,6 +71,14 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
             ->with('foo')
             ->will($this->returnValue($asset));
 
+        $asset->expects($this->any())
+            ->method('getVars')
+            ->will($this->returnValue([]));
+
+        $asset->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue([]));
+
         $xml = $this->renderXml('reference.twig');
         $this->assertEquals(1, count($xml->asset));
         $this->assertStringStartsWith('css/', (string) $xml->asset['url']);
@@ -144,6 +152,14 @@ class AsseticExtensionTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('foo')
             ->will($this->returnValue($asset));
+
+        $asset->expects($this->any())
+            ->method('getVars')
+            ->will($this->returnValue([]));
+
+        $asset->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue([]));
 
         $xml = $this->renderXml('mixture.twig');
         $this->assertEquals(1, count($xml->asset));

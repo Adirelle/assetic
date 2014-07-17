@@ -71,6 +71,12 @@ class TwigFormulaLoaderTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('foo')
             ->will($this->returnValue($asset));
+        $asset->expects($this->any())
+            ->method('getVars')
+            ->will($this->returnValue([]));
+        $asset->expects($this->any())
+            ->method('getFilters')
+            ->will($this->returnValue([]));
 
         $formulae = $this->loader->load($resource);
         $this->assertEquals($expected, $formulae);
