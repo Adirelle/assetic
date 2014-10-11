@@ -13,6 +13,7 @@ namespace Assetic\Asset;
 
 use Assetic\Filter\FilterCollection;
 use Assetic\Filter\FilterInterface;
+use Assetic\Visitor\VisitorInterface;
 
 /**
  * A base abstract asset.
@@ -177,5 +178,10 @@ abstract class BaseAsset implements AssetInterface
     public function getValues()
     {
         return $this->values;
+    }
+
+    public function accept(VisitorInterface $visitor)
+    {
+        return $visitor->visitLeaf($this);
     }
 }

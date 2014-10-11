@@ -13,6 +13,7 @@ namespace Assetic\Asset;
 
 use Assetic\AssetManager;
 use Assetic\Filter\FilterInterface;
+use Assetic\Visitor\VisitorInterface;
 
 /**
  * A reference to an asset in the asset manager.
@@ -116,6 +117,13 @@ class AssetReference implements AssetInterface
     public function setValues(array $values)
     {
         $this->callAsset(__FUNCTION__, array($values));
+    }
+
+    public function accept(VisitorInterface $visitor)
+    {
+        $this->flushFilters();
+
+        return $visitor->visit($this->am->get($this->name));
     }
 
     // private

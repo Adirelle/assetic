@@ -15,6 +15,7 @@ use Assetic\Asset\Iterator\AssetCollectionFilterIterator;
 use Assetic\Asset\Iterator\AssetCollectionIterator;
 use Assetic\Filter\FilterCollection;
 use Assetic\Filter\FilterInterface;
+use Assetic\Visitor\VisitorInterface;
 
 /**
  * A collection of assets.
@@ -234,5 +235,10 @@ class AssetCollection implements \IteratorAggregate, AssetCollectionInterface
     public function getValues()
     {
         return $this->values;
+    }
+
+    public function accept(VisitorInterface $visitor)
+    {
+        return $visitor->visitCollection($this);
     }
 }

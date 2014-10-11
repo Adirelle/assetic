@@ -12,6 +12,7 @@
 namespace Assetic\Asset;
 
 use Assetic\Filter\FilterInterface;
+use Assetic\Visitor\VisitorInterface;
 
 /**
  * An asset has a mutable URL and content and can be loaded and dumped.
@@ -163,4 +164,13 @@ interface AssetInterface
      * @return array an array of strings
      */
     public function getValues();
+
+    /**
+     * Let the visitor visit this asset.
+     *
+     * @param VisitorInterface $visitor
+     *
+     * @return mixed The result of the visit.
+     */
+    public function accept(VisitorInterface $visitor);
 }

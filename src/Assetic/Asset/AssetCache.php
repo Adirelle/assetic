@@ -11,6 +11,7 @@
 
 namespace Assetic\Asset;
 
+use Assetic\Visitor\VisitorInterface;
 use Assetic\Cache\CacheInterface;
 use Assetic\Filter\FilterInterface;
 use Assetic\Filter\HashableInterface;
@@ -125,6 +126,11 @@ class AssetCache implements AssetInterface
     public function getValues()
     {
         return $this->asset->getValues();
+    }
+
+    public function accept(VisitorInterface $visitor)
+    {
+        return $visitor->visit($this->asset);
     }
 
     /**
