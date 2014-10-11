@@ -58,4 +58,16 @@ class HttpAssetTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('ajax/libs/jquery/1.6.1/jquery.min.js', $asset->getSourcePath(), '->__construct() set the source path');
         $this->assertEquals('http://ajax.googleapis.com/ajax/libs/jquery/1.6.1', $asset->getSourceDirectory(), '->__construct() sets the source directory');
     }
+
+    public function testAccept()
+    {
+        $visitor = $this->getMock('\Assetic\Visitor\VisitorInterface');
+        $asset = new HttpAsset(self::JQUERY);
+
+        $visitor->expects($this->once())
+            ->method('visitLeaf')
+            ->with($this->identicalTo($asset));
+
+        $asset->accept($visitor);
+    }
 }

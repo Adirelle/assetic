@@ -71,4 +71,16 @@ class FileAssetTest extends \PHPUnit_Framework_TestCase
 
         $asset = new FileAsset(__FILE__, array(), __DIR__.'/foo');
     }
+
+    public function testAccept()
+    {
+        $visitor = $this->getMock('\Assetic\Visitor\VisitorInterface');
+        $asset = new FileAsset(__FILE__, array(), __DIR__);
+
+        $visitor->expects($this->once())
+            ->method('visitLeaf')
+            ->with($this->identicalTo($asset));
+
+        $asset->accept($visitor);
+    }
 }

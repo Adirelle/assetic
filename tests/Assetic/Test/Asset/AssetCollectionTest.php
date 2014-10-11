@@ -390,4 +390,16 @@ class AssetCollectionTest extends \PHPUnit_Framework_TestCase
             $this->assertCount(0, $asset->getFilters());
         }
     }
+
+    public function testAccept()
+    {
+        $coll = new AssetCollection();
+        $visitor = $this->getMock('\Assetic\Visitor\VisitorInterface');
+
+        $visitor->expects($this->once())
+            ->method('visitCollection')
+            ->with($this->identicalTo($coll));
+
+        $coll->accept($visitor);
+    }
 }

@@ -123,4 +123,21 @@ class AssetReferenceTest extends \PHPUnit_Framework_TestCase
 
         $this->ref->dump($filter);
     }
+
+    public function testAccept()
+    {
+        $visitor = $this->getMock('\Assetic\Visitor\VisitorInterface');
+        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
+
+        $this->am->expects($this->exactly(2))
+            ->method('get')
+            ->with('foo')
+            ->will($this->returnValue($asset));
+
+        $visitor->expects($this->once())
+            ->method('visit')
+            ->with($this->identicalTo($asset));
+
+        $this->ref->accept($visitor);
+    }
 }

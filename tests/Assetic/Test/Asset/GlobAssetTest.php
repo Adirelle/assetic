@@ -71,4 +71,16 @@ class GlobAssetTest extends \PHPUnit_Framework_TestCase
             $this->assertContains('works', $target);
         }
     }
+
+    public function testAccept()
+    {
+        $visitor = $this->getMock('\Assetic\Visitor\VisitorInterface');
+        $assets = new GlobAsset(__DIR__.'/*.php');
+
+        $visitor->expects($this->once())
+            ->method('visitCollection')
+            ->with($this->identicalTo($assets));
+
+        $assets->accept($visitor);
+    }
 }

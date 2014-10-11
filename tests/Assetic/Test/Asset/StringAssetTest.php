@@ -87,4 +87,16 @@ class StringAssetTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals("test", $asset->getContent(), '->getContent() returns the content after load()');
     }
+
+    public function testAccept()
+    {
+        $visitor = $this->getMock('\Assetic\Visitor\VisitorInterface');
+        $asset = new StringAsset("test");
+
+        $visitor->expects($this->once())
+            ->method('visitLeaf')
+            ->with($this->identicalTo($asset));
+
+        $asset->accept($visitor);
+    }
 }
